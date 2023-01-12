@@ -47,16 +47,27 @@ const FirebaseRegister = ({ ...others }) => {
     const [showPassword, setShowPassword] = React.useState(false);
     const [checked, setChecked] = React.useState(false);
     const success = document.getElementById('success');
-    const firtName = document.getElementById('outlined-adornment-firstname-register');
 
     const allstatus = [
         {
-            value: 'individual',
-            label: 'Particulier'
+            value: 'Manager',
+            label: 'Manager'
         },
         {
-            value: 'company',
-            label: 'Entreprise'
+            value: 'comptable',
+            label: 'comptable'
+        },
+        {
+            value: 'Technicien',
+            label: 'Technicien'
+        },
+        {
+            value: 'Ingénieur',
+            label: 'Ingénieur'
+        },
+        {
+            value: 'Secretaire',
+            label: 'Secretaire'
         }
     ];
     const [usrstatus, setUserStatus] = useState('individual');
@@ -90,10 +101,10 @@ const FirebaseRegister = ({ ...others }) => {
         <>
             <Formik
                 initialValues={{
-                    usertype: usrstatus,
+                    usrtype: usrstatus,
                     firstname: '',
                     lastname: '',
-                    useremail: '',
+                    email: '',
                     password: '',
                     companyname: '',
                     commercialname: '',
@@ -109,15 +120,15 @@ const FirebaseRegister = ({ ...others }) => {
                         .min(2, '2 charactères minimum')
                         .max(100, '100 charactères maximum')
                         .required('Le champs le prénom est obligatoire'),
-                    useremail: Yup.string().email('Email fourni non conforme').max(255).required('Le champs Email est obligatoire'),
+                    email: Yup.string().email('Email fourni non conforme').max(255).required('Le champs Email est obligatoire'),
                     password: Yup.string().max(50, '50 charactères maximum').required('Le mot de passe est obligatoire'),
                     checked: Yup.bool().oneOf([true], "L'acceptation des conditions d'utilisation est obligatoire")
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        const resp = await axios.post('http://localhost:8000/api/add-member', values);
+                        const resp = await axios.post('http://localhost:8000/api/auth/register', values);
                         console.log(values);
-                        if (resp.data.status === 200) {
+                        if (resp.data.status === 201) {
                             console.log(resp.data.message);
                             success.innerHTML = 'Votre compte a été enregistré avec succès, vérifier votre boite mail';
                             success.style.display = 'block';
@@ -136,7 +147,7 @@ const FirebaseRegister = ({ ...others }) => {
             >
                 {({ success, errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
-                        <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+                        <Grid container spacing={1} alignItems="center" justifyContent="space-between">
                             <Grid item xs={12} md={12}>
                                 <TextField
                                     id="outlined-select-usertype"
@@ -144,7 +155,7 @@ const FirebaseRegister = ({ ...others }) => {
                                     fullWidth
                                     label="Votre statut"
                                     value={usrstatus}
-                                    name="usertype"
+                                    name="usrtype"
                                     onChange={(e) => {
                                         handleChange(e);
                                         setUserStatus(e.target.value);
@@ -198,25 +209,21 @@ const FirebaseRegister = ({ ...others }) => {
                                 )}
                             </Grid>
                         </Grid>
-                        <FormControl
-                            fullWidth
-                            error={Boolean(touched.useremail && errors.useremail)}
-                            sx={{ ...theme.typography.customInput }}
-                        >
+                        <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
                             <InputLabel htmlFor="outlined-adornment-email-register">Adresse Email</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-email-register"
                                 type="email"
-                                value={values.useremail}
+                                value={values.email}
                                 defaultValue="bonjour"
-                                name="useremail"
+                                name="email"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 inputProps={{}}
                             />
-                            {touched.useremail && errors.useremail && (
+                            {touched.useremail && errors.email && (
                                 <FormHelperText error id="standard-weight-helper-text--register">
-                                    {errors.useremail}
+                                    {errors.email}
                                 </FormHelperText>
                             )}
                         </FormControl>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'utils/axios';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -56,9 +56,13 @@ const ProfileSection = () => {
      * anchorRef is used on different components and specifying one type leads to other components throwing an error
      * */
     const anchorRef = useRef(null);
+    const token = localStorage.getItem('access_token');
     const handleLogout = async () => {
         try {
             await logout();
+            const response = await axios.post('http://localhost:8000/api/auth/logout', { token });
+            localStorage.removeItem('access_token');
+            console.log(response);
         } catch (err) {
             console.error(err);
         }

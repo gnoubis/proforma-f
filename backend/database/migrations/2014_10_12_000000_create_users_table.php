@@ -16,17 +16,26 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('firstname');
-            $table->string('familyname');
-            $table->string('phonenumber')->unique();
-            $table->string('usermail')->unique();
-            $table->date('borndate');
-            $table->string('secretpwd');
+            $table->string('lastname');
+            $table->string('phonenumber')->nullable()->unique();
+            $table->string('email')->unique();
+            $table->date('borndate')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->string('refusr')->nullable();
+            $table->string('addresslocation')->nullable();
+            $table->string('postalcode')->nullable();
+            $table->string('matricule')->nullable();
             $table->string('usrtype');
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
+            $table->string('referralcode')->nullable();
+            $table->string('fromsource')->nullable();
+            $table->string('token')->nullable();
             $table->integer('userstatus')->default(0);
+            $table->integer('mandatoryterms')->default(0)->nullable();
             $table->rememberToken();
-            $table->datetime('created_date');
-            $table->datetime('edited_date');
-            $table->timestamps();
+             $table->timestamps();
         });
     }
 

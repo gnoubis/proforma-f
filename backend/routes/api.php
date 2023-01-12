@@ -1,31 +1,26 @@
 <?php
 
-//use App\Http\Controllers\AuthController;
-use App\Http\Controllers\API\MembershipController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 /*
-Route::prefix(prefix: "auth")->group(function() {
-    Route::controller(controller: AuthController::class)->group(function() {
-        Route::post("register", action:"register");
-        Route::post("login", action:"login");
-        Route::get("init", action:"init");
-
-        Route::get('/dashboard-data', 'Api\HomeController@getData');
-    });
-});
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
 */
-
-// Route::group(['middleware' => ['auth:api'], 'prefix' => 'v1'], function () {
-//     Route::get('/lead/list', 'Api\LeadController@listData');
-//     Route::post('/lead/create', 'Api\LeadController@create');
-//     Route::post('/lead/update', 'Api\LeadController@update');
-//     Route::post('/lead/destroy', 'Api\LeadController@destroy');
-
-//     Route::get('/dashboard-data', 'Api\HomeController@getData');
-// });
-
-Route::post('/add-member', [MembershipController::class, 'store']);
-Route::post('/login-member', [MembershipController::class, 'index']);
-Route::post('/passwordforget', [MembershipController::class, 'passwordforget']);
-// Route::get('email/verify/{id}', [\App\Http\Controllers::class,'verify'])->name('verification.verify');
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
+], function ($router){
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::post('/user-profile', [AuthController::class, 'userProfile']);
+});

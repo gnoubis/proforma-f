@@ -65,26 +65,20 @@ const JWTLogin = ({ loginProp, ...others }) => {
 
             <Formik
                 initialValues={{
-                    usermail: '',
-                    secretpwd: '',
+                    email: '',
+                    password: '',
                     checked: false,
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    usermail: Yup.string().email('Email non conforme').max(255).required('Email obligatoire'),
-                    secretpwd: Yup.string().max(255).required('Le mot de passe est obligatoire')
+                    email: Yup.string().email('Email non conforme').max(255).required('Email obligatoire'),
+                    password: Yup.string().max(255).required('Le mot de passe est obligatoire')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        const resp = await axios.post('http://localhost:8000/api/login-member', values);
-                        if (resp?.data?.status === 200) {
-                            try {
-                                await login(values.usermail, values.secretpwd);
-                            } catch (err) {
-                                console.error(err);
-                            }
-                        }
-                        if (resp?.data?.status === 500) {
+                        const resp = await login(values.email, values.password);
+                        console.log(login(values.email, values.password));
+                        if (resp?.data?.status === 422) {
                             success.innerHTML = 'Echec de connexion, email ou mot de passe incorrect';
                             success.style.display = 'block';
                             success.style.color = 'red';
@@ -98,9 +92,10 @@ const JWTLogin = ({ loginProp, ...others }) => {
                         }
                     } catch (err) {
                         if (!err?.resp) {
-                            success.innerHTML = 'Aucune reponse du sereur';
+                            success.innerHTML =
+                                'Votre compte est en attente d activation.Nous vous avons envoyé un email, veuillez vous connectez pour confirmer votre adresse';
                             success.style.display = 'block';
-                            success.style.color = 'red';
+                            success.style.color = 'green';
                             success.style.fontWeight = 'bold';
                         } else if (err.resp?.status === 500) {
                             success.innerHTML = 'Echec de connexion, email ou mot de passe incorrect';
@@ -113,36 +108,36 @@ const JWTLogin = ({ loginProp, ...others }) => {
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
-                        <FormControl fullWidth error={Boolean(touched.usermail && errors.email)} sx={{ ...theme.typography.customInput }}>
+                        <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
                             <InputLabel htmlFor="outlined-adornment-email-login">Email Address</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-email-login"
                                 type="email"
-                                value={values.usermail}
-                                name="usermail"
+                                value={values.email}
+                                name="email"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 label="Adresse mail"
                                 inputProps={{}}
                             />
-                            {touched.usermail && errors.usermail && (
+                            {touched.email && errors.email && (
                                 <FormHelperText error id="standard-weight-helper-text-email-login">
-                                    {errors.usermail}
+                                    {errors.email}
                                 </FormHelperText>
                             )}
                         </FormControl>
 
                         <FormControl
                             fullWidth
-                            error={Boolean(touched.secretpwd && errors.secretpwd)}
+                            error={Boolean(touched.password && errors.password)}
                             sx={{ ...theme.typography.customInput }}
                         >
                             <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password-login"
                                 type={showPassword ? 'text' : 'password'}
-                                value={values.secretpwd}
-                                name="secretpwd"
+                                value={values.password}
+                                name="password"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 endAdornment={
@@ -161,9 +156,9 @@ const JWTLogin = ({ loginProp, ...others }) => {
                                 label="Mot de passe"
                                 inputProps={{}}
                             />
-                            {touched.secretpwd && errors.secretpwd && (
+                            {touched.password && errors.password && (
                                 <FormHelperText error id="standard-weight-helper-text-password-login">
-                                    {errors.secretpwd}
+                                    {errors.password}
                                 </FormHelperText>
                             )}
                         </FormControl>

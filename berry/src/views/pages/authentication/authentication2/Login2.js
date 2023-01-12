@@ -19,16 +19,16 @@ import logoPicstudio from 'assets/images/auth/logoPicstudio.svg';
 // carousel items
 const items = [
     {
-        title: 'Components Based Design System',
-        description: 'Powerful and easy to use multipurpose theme'
+        title: 'Créer des factures en moins de temps',
+        description: 'Emettez et envoyer des factures professionnelles en un simple clic de souris'
     },
     {
-        title: 'Ready to use components',
-        description: 'Ready made component to apply directly'
+        title: 'Créer des bulletins de paie ',
+        description: 'Réaliser des bulletins de paie facilement et rapidement'
     },
     {
-        title: 'Multiple dashboard and widgets',
-        description: '100+ widgets and customize controls'
+        title: 'Agenda',
+        description: 'Planifier et organiser votre journée'
     }
 ];
 

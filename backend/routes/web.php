@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\MembershipController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +20,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('confirm/{id}/{email}', [MembershipController::class, 'confirm']);
+// Route::get('/email/resend','Auth\VerificationController@resend')->name('verification.resend');
+// Route::get('/email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify');
+
+Route::get('confirm/{id}/{email}', [AuthController::class, 'confirm']);
 
 Route::get('reset-password/{id}/{email}', function(){
     return redirect("http://localhost:3000/reset-password");
 });
+

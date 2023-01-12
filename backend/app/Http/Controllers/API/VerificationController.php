@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Membership;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
-
-    public function verify($membership_id, Request $request)
+    public function verify($user_id, Request $request)
     {
         if(!$request->hasValidSignature())
         {
@@ -17,10 +16,10 @@ class VerificationController extends Controller
 
         }
 
-        $membership = Membership::findOrFail($membership_id);
+        $user = User::findOrFail($user_id);
 
-        if (!$membership->hasVerifiedEmail()){
-                $membership->markEmailAsVerified();
+        if (!$user->hasVerifiedEmail()){
+                $user->markEmailAsVerified();
 
         }else{
             return response()->json([
@@ -32,7 +31,7 @@ class VerificationController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message'=> "Votre email $membership->useremail a ete vérifiée avec succes",
+            'message'=> "Votre email $user->email a ete vérifiée avec succes",
         ],200);
 
     }

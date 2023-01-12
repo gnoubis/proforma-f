@@ -45,10 +45,9 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
             'from' => [
                 'address' => env('MAIL_FROM_ADDRESS', 'geordannoubissie@gmail.com'),
-                'name' => env('MAIL_FROM_NAME', 'Picstudio'),
+                'name' => env('MAIL_FROM_NAME', 'gest-pro ers sarl'),
             ],
         ],
-
 
         'ses' => [
             'transport' => 'ses',

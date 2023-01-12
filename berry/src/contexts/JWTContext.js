@@ -27,6 +27,7 @@ const verifyToken = (serviceToken) => {
         return false;
     }
     const decoded = jwtDecode(serviceToken);
+    // console.log(decoded);
     /**
      * Property 'exp' does not exist on type '<T = unknown>(token, options?: JwtDecodeOptions | undefined) => T'.
      */
@@ -35,10 +36,10 @@ const verifyToken = (serviceToken) => {
 
 const setSession = (serviceToken) => {
     if (serviceToken) {
-        localStorage.setItem('serviceToken', serviceToken);
+        localStorage.setItem('access_token', serviceToken);
         axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
     } else {
-        localStorage.removeItem('serviceToken');
+        localStorage.removeItem('access_token');
         delete axios.defaults.headers.common.Authorization;
     }
 };
@@ -51,39 +52,31 @@ export const JWTProvider = ({ children }) => {
 
     useEffect(() => {
         const init = async () => {
-            try {
-                const serviceToken = window.localStorage.getItem('serviceToken');
-                if (serviceToken && verifyToken(serviceToken)) {
-                    setSession(serviceToken);
-                    const response = await axios.get('http://localhost:8000/api/login-member');
-                    const { user } = response.data;
-                    dispatch({
-                        type: LOGIN,
-                        payload: {
-                            isLoggedIn: true,
-                            user
-                        }
-                    });
-                } else {
-                    dispatch({
-                        type: LOGOUT
-                    });
-                }
-            } catch (err) {
-                console.error(err);
+            const serviceToken = window.localStorage.getItem('access_token');
+            console.log(serviceToken);
+            if (serviceToken && verifyToken(serviceToken)) {
+                setSession(serviceToken);
+                dispatch({
+                    type: LOGIN,
+                    payload: {
+                        isLoggedIn: true
+                    }
+                });
+            } else {
                 dispatch({
                     type: LOGOUT
                 });
             }
         };
-
         init();
     }, []);
 
-    const login = async (usermail, secretpwd) => {
-        const response = await axios.post('http://localhost:8000/api/login-member', { usermail, secretpwd });
-        const { serviceToken, user } = response.data;
+    const login = async (email, password) => {
+        const response = await axios.post('http://localhost:8000/api/auth/login', { email, password });
+        const serviceToken = response.data.access_token;
+        const { user } = response.data.user;
         setSession(serviceToken);
+        console.log(serviceToken);
         dispatch({
             type: LOGIN,
             payload: {

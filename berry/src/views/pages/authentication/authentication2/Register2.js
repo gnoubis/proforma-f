@@ -42,31 +42,6 @@ const Register = () => {
     return (
         <AuthWrapper2>
             <Grid container justifyContent={matchDownSM ? 'center' : 'space-between'} alignItems="center">
-                <Grid item md={6} lg={5} sx={{ position: 'relative', alignSelf: 'stretch', display: { xs: 'none', md: 'block' } }}>
-                    <BackgroundPattern2>
-                        <Grid item container justifyContent="center">
-                            <Grid item xs={12}>
-                                <Grid item container justifyContent="center" sx={{ pb: 8 }}>
-                                    <Grid item xs={10} lg={8} sx={{ '& .slick-list': { pb: 2 } }}>
-                                        <AuthSlider items={items} />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <img
-                                    alt="Auth method"
-                                    src={imgMain}
-                                    style={{
-                                        maxWidth: '100%',
-                                        margin: '0 auto',
-                                        display: 'block',
-                                        width: 300
-                                    }}
-                                />
-                            </Grid>
-                        </Grid>
-                    </BackgroundPattern2>
-                </Grid>
                 <Grid item md={6} lg={7} xs={12} sx={{ minHeight: '100vh' }}>
                     <Grid
                         sx={{ minHeight: '100vh' }}
