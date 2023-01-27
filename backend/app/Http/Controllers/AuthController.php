@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
@@ -47,6 +48,35 @@ class AuthController extends Controller
 
     }
 
+            public function resetPassword(Request $request)
+            {
+                $validator = Validator::make($request->all(), [
+                        'old_password' => 'required|string|min:6',
+                        'new_password' => 'required|string|min:6',
+                        'email' => 'required|email'
+                ]);
+
+                $user = User::where('email', $request->email)->first();
+                $old_password = Hash::make($request->old_password);
+
+                if( $user->password == $old_password ){
+                        $user->password = Hash::make($request->new_password);
+                        $user->save();
+
+                        return response()->json([
+                            'message' => 'mot de passe changé avec succes',
+                            'status' => 200
+                        ], 200);
+                }else{
+                    return response()->json([
+                        'message' => 'votre mot de passe est incorrect, vous ne pouvez le changé',
+                        'status' => 401,
+                        'user' => $user->password,
+                        'new_password' => $old_password
+                    ], 401);
+
+                }
+            }
 
     public function register(Request $request)
     {
@@ -62,7 +92,7 @@ class AuthController extends Controller
         }
         $user = User::create(array_merge(
                     $validator->validated(),
-                    ['password' => bcrypt($request->password)]
+                    ['password' => Hash::make($request->password)]
                 ));
     $mail = Mail::mailer('smtp')->to($user->email)->send(new VerificationMail($user));
 
@@ -87,6 +117,10 @@ class AuthController extends Controller
     {
         return response()->json(auth()->user());
     }
+    public function userProfilePass()
+    {
+        return response()->json(auth()->user());
+    }
 
     public function confirm(Request $request)
     {
@@ -107,6 +141,7 @@ class AuthController extends Controller
     }
 
     protected function createNewToken($token){
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',

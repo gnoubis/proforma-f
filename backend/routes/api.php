@@ -23,4 +23,6 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::post('/user-profile', [AuthController::class, 'userProfile']);
+    Route::post('/user-profile-pass', [AuthController::class, 'userProfilePass']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
