@@ -56,7 +56,7 @@ const UserProfile = () => {
                                 <Grid item xs={12}>
                                     <Typography variant="caption">
                                         <ErrorTwoToneIcon sx={{ height: 16, width: 16, mr: 1, verticalAlign: 'text-bottom' }} />
-                                        La taille maximale de l image doit etre de 125ko.
+                                        La taille maximale de l&apos; image doit etre de 125ko.
                                     </Typography>
                                 </Grid>
                             </Grid>

@@ -26,7 +26,7 @@ function ProductsPage({ productsData, deleteProductHandler }) {
                             <TableBody>
                                 {productsData.map((row, index) => (
                                     <TableRow key={index}>
-                                        <TableCell sx={{ pl: 3 }}>
+                                        <TableCell sx={{ pl: 4 }}>
                                             <Typography align="left" variant="subtitle1">
                                                 {row.product}
                                             </Typography>

@@ -14,7 +14,10 @@ import {
     MenuItem,
     Select,
     Stack,
-    TextField
+    TextField,
+    Tab,
+    Box,
+    Tabs
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/lab';
 
@@ -23,6 +26,7 @@ import AddItemPage from './AddItemPage';
 import { gridSpacing } from 'store/constant';
 import InputLabel from 'ui-component/extended/Form/InputLabel';
 import MainCard from 'ui-component/cards/MainCard';
+import Invoice from './Invoice';
 
 // third-party
 import * as yup from 'yup';
@@ -33,20 +37,14 @@ import { useFormik } from 'formik';
 // yup validation-schema
 const validationSchema = yup.object({
     invoiceNumber: yup.string().required('veuillez entrer le numero de la facture'),
-    customerName: yup.string().required('Entrer le nom du client'),
-    customerEmail: yup.string().email('Adresse mail invalide').required('Entrer l adresse mail du cleint'),
-    customerPhone: yup
-        .string()
-        .min(9, 'le numero de telephone doit avoir au moins 9 caracteres')
-        .required('le numéro de telephone du client est requis'),
-    customerAddress: yup.string().required('Adresse du client est requise'),
-    orderStatus: yup.string().required('statut de la facture est requis')
+    customerName: yup.string().required('Entrer le nom du client')
 });
 
 // ==============================|| CREATE INVOICE ||============================== //
 
 function CreateInvoice() {
     const [open, setOpen] = useState(false);
+    const [openInvoice, setOpenInvoice] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -54,8 +52,7 @@ function CreateInvoice() {
             customerName: '',
             customerEmail: '',
             customerPhone: '',
-            customerAddress: '',
-            orderStatus: 'pending'
+            customerAddress: ''
         },
         validationSchema,
         onSubmit: (values) => {
@@ -64,7 +61,6 @@ function CreateInvoice() {
             }
         }
     });
-
     // array of products
     const initialProducsData = [
         {
@@ -145,6 +141,20 @@ function CreateInvoice() {
         formik.resetForm();
     };
 
+    const [value, setValue] = useState(0);
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    const changeValue = () => {
+        setOpenInvoice(true);
+    };
+    function a11yProps(index) {
+        return {
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`
+        };
+    }
     // add item handler
     const handleAddItem = (addingData) => {
         setProductsData([
@@ -166,189 +176,183 @@ function CreateInvoice() {
     return (
         <>
             <MainCard title="Créer une facture proforma">
-                <form onSubmit={formik.handleSubmit}>
-                    <Grid container spacing={gridSpacing}>
-                        <Grid item xs={12} md={4}>
-                            <Stack>
-                                <InputLabel required>Numéro de la facture</InputLabel>
-                                <TextField
-                                    id="invoiceNumber"
-                                    name="invoiceNumber"
-                                    value={formik.values.invoiceNumber}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.invoiceNumber && Boolean(formik.errors.invoiceNumber)}
-                                    helperText={formik.touched.invoiceNumber && formik.errors.invoiceNumber}
-                                    onChange={formik.handleChange}
-                                    fullWidth
-                                    placeholder="Invoice #"
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <Stack>
-                                <InputLabel required>Nom du client</InputLabel>
-                                <TextField
-                                    fullWidth
-                                    id="customerName"
-                                    name="customerName"
-                                    value={formik.values.customerName}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.customerName && Boolean(formik.errors.customerName)}
-                                    helperText={formik.touched.customerName && formik.errors.customerName}
-                                    placeholder="Alex Z."
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <Stack>
-                                <InputLabel required>Adresse mail du client</InputLabel>
-                                <TextField
-                                    type="email"
-                                    fullWidth
-                                    id="customerEmail"
-                                    name="customerEmail"
-                                    value={formik.values.customerEmail}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.customerEmail && Boolean(formik.errors.customerEmail)}
-                                    helperText={formik.touched.customerEmail && formik.errors.customerEmail}
-                                    placeholder="alex@company.com"
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <Stack>
-                                <InputLabel required>Contact du client</InputLabel>
-                                <TextField
-                                    type="number"
-                                    fullWidth
-                                    id="customerPhone"
-                                    name="customerPhone"
-                                    value={formik.values.customerPhone}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.customerPhone && Boolean(formik.errors.customerPhone)}
-                                    helperText={formik.touched.customerPhone && formik.errors.customerPhone}
-                                    onChange={formik.handleChange}
-                                    placeholder="+237 00 00000 00000"
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Stack>
-                                <InputLabel required>Adresse du client</InputLabel>
-                                <TextField
-                                    fullWidth
-                                    id="customerAddress"
-                                    name="customerAddress"
-                                    value={formik.values.customerAddress}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.customerAddress && Boolean(formik.errors.customerAddress)}
-                                    helperText={formik.touched.customerAddress && formik.errors.customerAddress}
-                                    onChange={formik.handleChange}
-                                    multiline
-                                    placeholder="Entrer l'adresse"
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Stack>
-                                <InputLabel required>Date de la facture</InputLabel>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DatePicker
-                                        inputFormat="dd/MM/yyyy"
-                                        renderInput={(props) => <TextField fullWidth {...props} />}
-                                        value={valueBasic}
-                                        onChange={(newValue) => {
-                                            setValueBasic(newValue);
-                                        }}
+                {openInvoice === false && (
+                    <form onSubmit={formik.handleSubmit}>
+                        <Grid container spacing={gridSpacing}>
+                            <Grid item xs={12} md={4}>
+                                <Stack>
+                                    <InputLabel required>Numéro de la facture</InputLabel>
+                                    <TextField
+                                        id="invoiceNumber"
+                                        name="invoiceNumber"
+                                        value={formik.values.invoiceNumber}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.invoiceNumber && Boolean(formik.errors.invoiceNumber)}
+                                        helperText={formik.touched.invoiceNumber && formik.errors.invoiceNumber}
+                                        onChange={formik.handleChange}
+                                        fullWidth
+                                        placeholder="Invoice #"
                                     />
-                                </LocalizationProvider>
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Stack>
-                                <InputLabel required>Statut</InputLabel>
-                                <Select
-                                    id="orderStatus"
-                                    name="orderStatus"
-                                    defaultValue={formik.values.orderStatus}
-                                    value={formik.values.orderStatus}
-                                    onChange={formik.handleChange}
-                                >
-                                    <MenuItem value="pending">Pending</MenuItem>
-                                    <MenuItem value="refund">Refund</MenuItem>
-                                    <MenuItem value="paid">Paid</MenuItem>
-                                </Select>
-                                {formik.errors.orderStatus && <FormHelperText error>{formik.errors.orderStatus}</FormHelperText>}
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-
-                        <ProductsPage productsData={productsData} deleteProductHandler={deleteProductHandler} />
-
-                        {addItemClicked ? (
-                            <Grid item xs={12}>
-                                <AddItemPage handleAddItem={handleAddItem} setAddItemClicked={setAddItemClicked} />
+                                </Stack>
                             </Grid>
-                        ) : (
-                            <Grid item>
-                                <Button variant="text" onClick={() => setAddItemClicked(true)}>
-                                    + Ajouter un élément
+                            <Grid item xs={12}>
+                                <Divider />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <Stack>
+                                    <InputLabel required>Nom du client</InputLabel>
+                                    <TextField
+                                        fullWidth
+                                        id="customerName"
+                                        name="customerName"
+                                        value={formik.values.customerName}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.customerName && Boolean(formik.errors.customerName)}
+                                        helperText={formik.touched.customerName && formik.errors.customerName}
+                                        placeholder="Alex Z."
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <Stack>
+                                    <InputLabel required>Adresse mail du client</InputLabel>
+                                    <TextField
+                                        type="email"
+                                        fullWidth
+                                        id="customerEmail"
+                                        name="customerEmail"
+                                        value={formik.values.customerEmail}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        placeholder="alex@ers-sarl.com"
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <Stack>
+                                    <InputLabel required>Contact du client</InputLabel>
+                                    <TextField
+                                        type="number"
+                                        fullWidth
+                                        id="customerPhone"
+                                        name="customerPhone"
+                                        value={formik.values.customerPhone}
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                        placeholder="+237 659 19 35 18"
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Stack>
+                                    <InputLabel required>Adresse du client</InputLabel>
+                                    <TextField
+                                        fullWidth
+                                        id="customerAddress"
+                                        name="customerAddress"
+                                        value={formik.values.customerAddress}
+                                        onBlur={formik.handleBlur}
+                                        onChange={formik.handleChange}
+                                        multiline
+                                        placeholder="Entrer l'adresse"
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Divider />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Stack>
+                                    <InputLabel required>Date de la facture</InputLabel>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <DatePicker
+                                            inputFormat="dd/MM/yyyy"
+                                            renderInput={(props) => <TextField fullWidth {...props} />}
+                                            value={valueBasic}
+                                            onChange={(newValue) => {
+                                                setValueBasic(newValue);
+                                            }}
+                                        />
+                                    </LocalizationProvider>
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Divider />
+                            </Grid>
+
+                            <ProductsPage productsData={productsData} deleteProductHandler={deleteProductHandler} />
+
+                            {addItemClicked ? (
+                                <Grid item xs={12}>
+                                    <AddItemPage handleAddItem={handleAddItem} setAddItemClicked={setAddItemClicked} />
+                                </Grid>
+                            ) : (
+                                <Grid item>
+                                    <Button variant="text" onClick={() => setAddItemClicked(true)}>
+                                        + Ajouter un élément
+                                    </Button>
+                                </Grid>
+                            )}
+                            <Grid item xs={12}>
+                                <Divider />
+                            </Grid>
+
+                            <TotalCard productsData={productsData} allAmounts={allAmounts} />
+
+                            <Grid item xs={12}>
+                                <Stack>
+                                    <InputLabel required>Termes & Conditions :</InputLabel>
+                                    <TextField
+                                        fullWidth
+                                        id="customerAddress"
+                                        name="customerAddress"
+                                        defaultValue="I acknowledge terms and conditions."
+                                        multiline
+                                        placeholder="Entrer l'adresse"
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Divider />
+                            </Grid>
+                            <Grid item sx={{ display: 'flex', justifyContent: 'flex-start' }} xs={12}>
+                                <Button variant="contained" onClick={() => setOpenInvoice(true)}>
+                                    Prévisualiser
                                 </Button>
                             </Grid>
-                        )}
-                        <Grid item xs={12}>
-                            <Divider />
+                            <Grid item sx={{ display: 'flex', justifyContent: 'flex-end' }} xs={12}>
+                                <Button variant="contained" type="submit">
+                                    Enregistrer la facture
+                                </Button>
+                            </Grid>
+                            <Grid item>
+                                <Dialog open={open}>
+                                    <DialogContent>
+                                        <DialogContentText sx={{ fontWeight: 500, color: `secondary.dark` }}>
+                                            Facture créée avec succes
+                                        </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions sx={{ pr: '20px' }}>
+                                        <Button autoFocus variant="contained" onClick={handleDialogOk}>
+                                            Ok
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+                            </Grid>
                         </Grid>
-
-                        <TotalCard productsData={productsData} allAmounts={allAmounts} />
-
-                        <Grid item xs={12}>
-                            <Stack>
-                                <InputLabel required>Termes & Conditions :</InputLabel>
-                                <TextField
-                                    fullWidth
-                                    id="customerAddress"
-                                    name="customerAddress"
-                                    defaultValue="I acknowledge terms and conditions."
-                                    multiline
-                                    placeholder="Entrer l'adresse"
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Divider />
-                        </Grid>
-                        <Grid item sx={{ display: 'flex', justifyContent: 'flex-end' }} xs={12}>
-                            <Button variant="contained" type="submit">
-                                Ajouter une facture
+                    </form>
+                )}
+                {openInvoice === true && (
+                    <form>
+                        <Invoice handleItem={formik.values} productsData={productsData} allAmounts={allAmounts} getDate={valueBasic} />
+                        <Grid item sx={{ display: 'flex', justifyContent: 'flex-start' }} xs={12}>
+                            <Button variant="contained" onClick={() => setOpenInvoice(false)}>
+                                Retour
                             </Button>
                         </Grid>
-                        <Grid item>
-                            <Dialog open={open}>
-                                <DialogContent>
-                                    <DialogContentText sx={{ fontWeight: 500, color: `secondary.dark` }}>
-                                        Facture créée avec succes
-                                    </DialogContentText>
-                                </DialogContent>
-                                <DialogActions sx={{ pr: '20px' }}>
-                                    <Button autoFocus variant="contained" onClick={handleDialogOk}>
-                                        Ok
-                                    </Button>
-                                </DialogActions>
-                            </Dialog>
-                        </Grid>
-                    </Grid>
-                </form>
+                    </form>
+                )}
             </MainCard>
         </>
     );

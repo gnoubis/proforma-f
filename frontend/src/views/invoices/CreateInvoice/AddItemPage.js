@@ -29,12 +29,14 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
             id: 112,
             name: 'Product Name 2',
             amount: 200,
+            unity: 'hl',
             desc: 'Product Description 2'
         },
         {
             id: 113,
             name: 'Product Name 3',
             amount: 300,
+            unity: 'kl',
             desc: 'Product Description 3'
         }
     ];
@@ -47,17 +49,17 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
 
     const handleChange = (event) => {
         const value = event.target.value;
-        if (event.target.name === 'quantité ') {
+        if (event.target.name === 'quantity') {
             if (Number(value) < 0) {
                 setErrors({
                     ...errors,
-                    quantityError: ' valeur négative non acceptable'
+                    quantityError: 'negative values not allowed'
                 });
                 setSelectedQuantity(value);
             } else if (Number(value) === 0) {
                 setErrors({
                     ...errors,
-                    quantityError: 'la quantité ne peut pas etre nul'
+                    quantityError: 'quantity can not be zero'
                 });
                 setSelectedQuantity(value);
             } else {
@@ -100,7 +102,7 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
                                     if (selected.length === 0) {
                                         return (
                                             <Typography color="textSecondary" sx={{ lineHeight: '1.4375em' }}>
-                                                Select Product
+                                                Selectionné un article
                                             </Typography>
                                         );
                                     }
@@ -112,20 +114,22 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
                                             <Typography variant="subtitle1" sx={{ lineHeight: '1.4375em' }}>
                                                 {selectedData.name}
                                             </Typography>
-                                            <Typography>Rate : {selectedData.amount}</Typography>
+                                            <Typography>PU : {selectedData.amount}</Typography>
+                                            <Typography>Unité : {selectedData.unity}</Typography>
                                         </Stack>
                                     );
                                 }}
                                 inputProps={{ 'aria-label': 'Without label' }}
                             >
                                 <MenuItem disabled value="">
-                                    <Typography color="textSecondary">Select Product</Typography>
+                                    <Typography color="textSecondary">Selectionné un article</Typography>
                                 </MenuItem>
                                 {itemList.map((item, i) => (
                                     <MenuItem key={i} value={item.id}>
                                         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%' }}>
                                             <Typography variant="subtitle1">{item.name}</Typography>
-                                            <Typography>Rate : {item.amount}</Typography>
+                                            <Typography>PU : {item.amount}</Typography>
+                                            <Typography>Unité : {item.unity}</Typography>
                                         </Stack>
                                     </MenuItem>
                                 ))}
@@ -136,10 +140,6 @@ function AddItemPage({ handleAddItem, setAddItemClicked }) {
                 <Grid item xs={12} md={4}>
                     <Stack spacing={1}>
                         <Typography variant="subtitle1" id="itemQuantity">
-                            Unité
-                        </Typography>
-                        <TextField fullWidth type="text" name="unity" />
-                        <Typography variant="subtitle1" id="itemUnity">
                             Quantité
                         </Typography>
                         <TextField
